@@ -17,10 +17,21 @@ docker run --name elasticsearch -p 9200:9200 \
  -d elasticsearch:7.10.1
 
 
+vi /mydata/elasticsearch/config/elasticsearch.yml
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+docker update elasticsearch --restart=always
 
 docker run -d -p 9100:9100 docker.io/mobz/elasticsearch-head:5-alpine
 
 
 docker pull mobz/elasticsearch-head:5-alpine
 
+docker exec -it ******(容器id) /bin/bash
+
+
 http://localhost:9200/
+
+#elasticsearch-head
+http://localhost:9100/
