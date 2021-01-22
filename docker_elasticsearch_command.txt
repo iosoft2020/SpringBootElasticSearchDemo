@@ -28,9 +28,18 @@ docker run -d -p 9100:9100 docker.io/mobz/elasticsearch-head:5-alpine
 
 docker pull mobz/elasticsearch-head:5-alpine
 
-docker exec -it ******(容器id) /bin/bash
+find / -name vendor.js
+cd /var/lib/docker/overlay2/430999bb92b7af1de4a95f6372fb0e31d1f297887eb644ab5dbdcbe11bf27078/merged/usr/src/app/_site
+vi vendor.js
+
+6886行 contentType: "application/x-www-form-urlencoded"
+  →→ contentType: "application/json;charset=UTF-8"
+
+7574行 var inspectData = s.contentType === "application/x-www-form-urlencoded" &&
+  →→ var inspectData = s.contentType === "application/json;charset=UTF-8" &&
 
 
+#es
 http://localhost:9200/
 
 #elasticsearch-head
