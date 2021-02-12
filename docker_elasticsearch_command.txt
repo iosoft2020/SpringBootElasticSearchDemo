@@ -1,5 +1,6 @@
 
 docker pull elasticsearch:7.10.1
+docker pull kibana:7.10.1
 
 mkdir -p /mydata/elasticsearch/config
 mkdir -p /mydata/elasticsearch/data
@@ -16,6 +17,9 @@ docker run --name elasticsearch -p 9200:9200 \
  -v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \
  -d elasticsearch:7.10.1
 
+
+docker run --name kibana -e ELASTICSEARCH_HOSTS=http://192.168.56.100:9200 -p 5601:5601 \
+-d kibana:7.10.1
 
 vi /mydata/elasticsearch/config/elasticsearch.yml
 http.cors.enabled: true
@@ -44,3 +48,8 @@ http://localhost:9200/
 
 #elasticsearch-head
 http://localhost:9100/
+
+http://192.168.56.100:9200/_cat/nodes #查看节点信息
+http://192.168.56.100:9200/_cat/health #查看健康状况
+http://192.168.56.100:9200/_cat/master #查看主节点信息
+http://192.168.56.100:9200/_cat/indices#查看所有索引，相当于数据库的showdatabases
