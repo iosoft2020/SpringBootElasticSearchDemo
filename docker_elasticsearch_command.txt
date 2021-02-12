@@ -11,7 +11,7 @@ chmod -R 777 /mydata/elasticsearch/
 docker run --name elasticsearch -p 9200:9200 \
  -p 9300:9300 \
  -e "discovery.type=single-node" \
- -e ES_JAVA_OPTS="-Xms64m -Xmx128m" \
+ -e ES_JAVA_OPTS="-Xms64m -Xmx512m" \
   -v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \
  -v /mydata/elasticsearch/data:/usr/share/elasticsearch/data \
  -v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins \
@@ -49,7 +49,45 @@ http://localhost:9200/
 #elasticsearch-head
 http://localhost:9100/
 
+#kibana devtool
+http://localhost:5601/
+
 http://192.168.56.100:9200/_cat/nodes #查看节点信息
 http://192.168.56.100:9200/_cat/health #查看健康状况
 http://192.168.56.100:9200/_cat/master #查看主节点信息
 http://192.168.56.100:9200/_cat/indices#查看所有索引，相当于数据库的showdatabases
+
+发送(_mapping)是查看数据类型，也可以修改数据类型
+
+#install ik
+yum install wget
+cd /mydata/elasticsearch/plugins
+wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.10.1/elasticsearch-analysis-ik-7.10.1.zip
+mkdir ik
+chmod -R 777 ik
+unzip elasticsearch-analysis-ik-7.10.1.zip -d ik
+docker exec -it 容器id /bin/bash
+elasticsearch-plugin list
+docker restart 容器id
+
+cd /mydata/elasticsearch/plugins/ik/config
+vi IKAnalyzer.cfg.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+        <comment>IK Analyzer 扩展配置</comment>
+        <!--用户可以在这里配置自己的扩展字典 -->
+        <entry key="ext_dict"></entry>
+         <!--用户可以在这里配置自己的扩展停止词字典-->
+        <entry key="ext_stopwords"></entry>
+        <!--用户可以在这里配置远程扩展字典 -->
+         <entry key="remote_ext_dict">http://192.168.56.100:9001/es/fenci.txt</entry>                                                                                  <!--用户可以在这里配置远程扩展停止词字典-->
+        <!-- <entry key="remote_ext_stopwords">words_location</entry> -->
+</properties>
+
+docker restart elasticsearch
+
+vi /etc/ssh/sshd_config
+PasswordAuthentication yes
+service sshd restart
+

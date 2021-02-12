@@ -1,0 +1,22 @@
+#into docker hub and find nginx version
+https://hub.docker.com/
+
+docker pull nginx:1.19
+docker run -p 80:80 --name mynginx -d nginx:1.19
+mkdir -p /mydata/nginx
+docker container cp mynginx:/etc/nginx .
+docker stop mynginx
+docker rm mynginx
+mv nginx conf
+mkdir nginx
+mv conf nginx/
+
+mkdir -p /mydata/nginx/html
+mkdir -p /mydata/nginx/logs
+mkdir -p /mydata/nginx/conf
+
+docker run -p 9001:80 --name mynginx \
+-v /mydata/nginx/html:/usr/share/nginx/html \
+-v /mydata/nginx/logs:/var/log/nginx \
+-v /mydata/nginx/conf:/etc/nginx \
+-d nginx:1.19
