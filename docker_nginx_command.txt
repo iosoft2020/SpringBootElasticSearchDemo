@@ -20,3 +20,35 @@ docker run -p 9001:80 --name mynginx \
 -v /mydata/nginx/logs:/var/log/nginx \
 -v /mydata/nginx/conf:/etc/nginx \
 -d nginx:1.19
+
+#create nginx conf.d configuration file
+cd /mydata/nginx/conf/conf.d
+vi xxx.conf
+#edit
+server_name xxx.com
+
+location / {
+  proxy_set_header Host $host;
+  proxy_pass http://myapp1; #application server ip+port( windows ipconfig ip) 分号结尾
+}
+
+#edit main configuration
+vi /mydata/nginx/conf/nginx.conf
+http {
+    upstream myapp1 {
+        server srv1.example.com:port;
+        server srv2.example.com:port;
+        server srv3.example.com:port;
+    }
+
+}
+
+#动静分离
+mkdir -p /mydata/nginx/html/static
+#upload js,css,image,edit html access url
+href="/static/..."
+#modify config file
+vi /mydata/nginx/conf/conf.d/xxx.conf
+location /static/ {
+  root /usr/share/nginx/html;
+}
