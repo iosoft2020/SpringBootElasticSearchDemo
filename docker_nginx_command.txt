@@ -21,6 +21,8 @@ docker run -p 9001:80 --name mynginx \
 -v /mydata/nginx/conf:/etc/nginx \
 -d nginx:1.19
 
+docker update mynginx --restart=always
+
 #create nginx conf.d configuration file
 cd /mydata/nginx/conf/conf.d
 vi xxx.conf
